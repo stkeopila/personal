@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import Nav from "./Nav"
+import { AppContext } from "../state/AppContext.jsx";
 
 export default function Header({ title }) {
+    const { user, darkMode, toggleDark } = useContext(AppContext);
+
     return (
         <>
-            <header>
-                <h1>{title}</h1>
-                <Nav />
+            <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <h1 style={{ margin: 0 }}>{title}</h1>
+                    <Nav />
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <button aria-pressed={darkMode} onClick={toggleDark} aria-label="Toggle dark mode">
+                        {darkMode ? "Light" : "Dark"} mode
+                    </button>
+                    {user ? <span>Signed in: {user.name}</span> : <span>Not signed in</span>}
+                </div>
             </header>
         </>
     )

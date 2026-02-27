@@ -5,7 +5,7 @@ export default function Layour ({ title, children }) {
     return (
         <>
             <Header title={title}/>
-            <main>{children}</main>
+            <main className="container">{children}</main>
             <footer />
         </>
     );
