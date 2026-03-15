@@ -1,10 +1,10 @@
 import React from "react";
-import Header from "./Header" 
+import Header from "./Header.jsx";
 
-export default function Layour ({ title, children }) {
+export default function Layout({ title, children }) {
     return (
         <>
-            <Header title={title}/>
+            <Header title={title} />
             <main className="container">{children}</main>
             <footer />
         </>

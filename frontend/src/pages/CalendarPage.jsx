@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import Layout from "../components/Layout"
+import Layout from "../components/Layout.jsx"
 import "../styles/calendar.css"
 import { AppContext } from "../state/AppContext.jsx";
 

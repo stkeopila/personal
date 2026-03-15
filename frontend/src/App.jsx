@@ -6,6 +6,7 @@ import UploadPicturePage from "./pages/UploadPicturePage.jsx";
 import CalendarPage from "./pages/CalendarPage.jsx";
 import { AppProvider } from "./state/AppContext.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 
 export default function App() {
     return (
@@ -18,6 +19,7 @@ export default function App() {
                         <Route path="/calendar" element={<CalendarPage />} />
                         <Route path="/upload" element={<UploadPicturePage />} />
                         <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
                     </Routes>
                 </BrowserRouter>
             </AppProvider>
