@@ -26,6 +26,19 @@ body{
   padding:16px;
 }
 
+*:focus{ outline: none; }
+input:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button { min-height: 40px; padding: 8px 12px; border-radius: 8px; }
+
+@media (max-width: 640px){
+  .container{ padding:12px; }
+  button { min-height: 44px; font-size: 16px; }
+}
+
 nav ul li a, nav ul li button{ color:var(--accent); text-decoration:none; background:none; border:none; cursor:pointer }
 
 .calendar__grid{ display:grid; grid-template-columns:repeat(7, 1fr); gap:6px }
