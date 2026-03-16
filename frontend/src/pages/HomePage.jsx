@@ -42,8 +42,12 @@ export default function HomePage() {
                                     if (!f) return;
                                     try {
                                         const up = await uploadFile(f);
-                                        const today = new Date().toISOString().slice(0,10);
-                                        await finishGoal(g.id, { imageUrl: up.url, date: today });
+                                        const defaultDate = new Date().toISOString().slice(0,10);
+                                        const inputDate = window.prompt('Enter completion date (YYYY-MM-DD) or leave blank for today:', defaultDate);
+                                        if (inputDate === null) return;
+                                        const chosen = (inputDate.trim() === '') ? defaultDate : inputDate.trim();
+                                        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(chosen)) { alert('Invalid date format'); return; }
+                                        await finishGoal(g.id, { imageUrl: up.url, date: chosen });
                                     } catch (err) {
                                         alert('Finish failed: ' + (err.message || 'error'));
                                     }

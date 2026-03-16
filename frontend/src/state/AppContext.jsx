@@ -116,7 +116,7 @@ export function AppProvider({ children }) {
       const eventsMap = {};
       eventsData.forEach(ev => {
         if (!eventsMap[ev.date]) eventsMap[ev.date] = [];
-        eventsMap[ev.date].push({ id: ev.id, text: ev.text });
+        eventsMap[ev.date].push({ id: ev.id, text: ev.text, imageUrl: normalizeImageUrl(ev.imageUrl || null), goalId: ev.goalId || null });
       });
       setEvents(eventsMap);
     } catch (e) {
