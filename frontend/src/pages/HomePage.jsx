@@ -5,6 +5,7 @@ import { AppContext } from "../state/AppContext.jsx";
 
 export default function HomePage() {
     const { goals, deleteGoal, finishGoal, uploadFile, user } = useContext(AppContext);
+    const visibleGoals = (goals || []).filter(g => !g.completed);
 
     async function handleDelete(id, title) {
         if (!confirm(`Delete goal "${title}"?`)) return;
@@ -22,7 +23,7 @@ export default function HomePage() {
             <h2>Streak: {streak}</h2>
             <h3>Current Goals</h3>
             <ul>
-                {goals.map((g) => (
+                {visibleGoals.map((g) => (
                     <li key={g.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div>
                             <strong>{g.title}</strong>
