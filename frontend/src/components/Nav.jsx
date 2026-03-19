@@ -6,7 +6,6 @@ const navItems = [
     { to: "/", label: "Home" },
     { to: "/create-goal", label: "Create Goal" },
     { to: "/calendar", label: "Calendar" },
-    { to: "/upload", label: "Upload Picture" },
 ];
 
 export default function Nav() {
