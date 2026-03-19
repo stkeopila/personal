@@ -7,7 +7,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const API = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  const API = import.meta.env.VITE_API_URL || `${window.location.origin}/api`;
 
   async function handleSubmit(e) {
     e.preventDefault();
