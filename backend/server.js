@@ -30,7 +30,7 @@ const multer = require('multer');
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017';
 const DB_NAME = process.env.DB_NAME || 'tracker';
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_jwt_secret_change_me';
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 let usersColl;
 let goalsColl;
