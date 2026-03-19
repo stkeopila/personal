@@ -28,7 +28,7 @@ export function AppProvider({ children }) {
     setEvents((prev) => ({ ...prev, [dateKey]: [...(prev[dateKey] || []), event] }));
   };
 
-  const API = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+  const API = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
   const API_BASE = API.replace(/\/api\/?$/, '');
 
   function normalizeImageUrl(url) {
