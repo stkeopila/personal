@@ -57,7 +57,7 @@ async function main() {
     if (fs.existsSync(absStatic)) {
       app.use(express.static(absStatic));
       app.get('*', (req, res, next) => {
-        if (req.path.startsWith('/api/')) return next();
+        if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) return next();
         res.sendFile(path.join(absStatic, 'index.html'));
       });
     }
@@ -79,7 +79,21 @@ async function main() {
       console.error('No writable upload directory available', e2);
     }
   }
-  app.use('/uploads', express.static(uploadDir));
+  const uploadServeDirs = Array.from(new Set([
+    uploadDir,
+    preferredUploadDir,
+    fallbackUploadDir,
+    path.resolve(process.cwd(), 'uploads'),
+  ]));
+  uploadServeDirs.forEach((dir) => {
+    try {
+      if (!fs.existsSync(dir)) return;
+      app.use('/uploads', express.static(dir));
+      app.use('/api/uploads', express.static(dir));
+    } catch (e) {
+    }
+  });
+  console.log(`Serving uploads from: ${uploadServeDirs.join(', ')}`);
   const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.\-]/g, '_')}`),
@@ -166,7 +180,7 @@ async function main() {
   app.post('/api/upload', authMiddleware, upload.single('file'), async (req, res) => {
     try {
       if (!req.file) return res.status(400).json({ error: 'no file' });
-      const url = `/uploads/${req.file.filename}`;
+      const url = `/api/uploads/${req.file.filename}`;
       res.json({ url });
     } catch (e) {
       console.error(e);
