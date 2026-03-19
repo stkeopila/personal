@@ -33,9 +33,20 @@ export function AppProvider({ children }) {
 
   function normalizeImageUrl(url) {
     if (!url) return null;
-    if (url.startsWith('http://') || url.startsWith('https://')) {
+    const raw = String(url).trim();
+    const uploadsIdx = raw.lastIndexOf('/uploads/');
+    if (uploadsIdx >= 0) {
+      const tail = raw.slice(uploadsIdx);
+      return API_BASE + '/api' + tail;
+    }
+    const winUploadsIdx = raw.toLowerCase().lastIndexOf('\\uploads\\');
+    if (winUploadsIdx >= 0) {
+      const tail = raw.slice(winUploadsIdx + 1).replace(/\\/g, '/');
+      return `${API_BASE}/api/${tail}`;
+    }
+    if (raw.startsWith('http://') || raw.startsWith('https://')) {
       try {
-        const u = new URL(url);
+        const u = new URL(raw);
         const currentHost = window.location.hostname;
         if (u.hostname === 'localhost' || u.hostname === '127.0.0.1' || u.hostname === currentHost) {
           if (u.pathname.startsWith('/uploads/')) return API_BASE + '/api' + u.pathname;
@@ -44,13 +55,13 @@ export function AppProvider({ children }) {
         }
       } catch (e) {
       }
-      return url;
+      return raw;
     }
-    if (url.startsWith('/api/uploads/')) return API_BASE + url;
-    if (url.startsWith('/uploads/')) return API_BASE + '/api' + url;
-    if (url.startsWith('/')) return API_BASE + url;
-    if (url.startsWith('uploads/')) return `${API_BASE}/api/${url}`;
-    return `${API_BASE}/${url}`;
+    if (raw.startsWith('/api/uploads/')) return API_BASE + raw;
+    if (raw.startsWith('/uploads/')) return API_BASE + '/api' + raw;
+    if (raw.startsWith('/')) return API_BASE + raw;
+    if (raw.startsWith('uploads/')) return `${API_BASE}/api/${raw}`;
+    return `${API_BASE}/${raw}`;
   }
 
   const login = async ({ username, password }) => {
