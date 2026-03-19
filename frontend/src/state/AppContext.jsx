@@ -36,17 +36,20 @@ export function AppProvider({ children }) {
     if (url.startsWith('http://') || url.startsWith('https://')) {
       try {
         const u = new URL(url);
-        if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+        const currentHost = window.location.hostname;
+        if (u.hostname === 'localhost' || u.hostname === '127.0.0.1' || u.hostname === currentHost) {
           if (u.pathname.startsWith('/uploads/')) return API_BASE + '/api' + u.pathname;
+          if (u.pathname.startsWith('/api/uploads/')) return API_BASE + u.pathname;
           return API_BASE + u.pathname;
         }
       } catch (e) {
       }
       return url;
     }
+    if (url.startsWith('/api/uploads/')) return API_BASE + url;
     if (url.startsWith('/uploads/')) return API_BASE + '/api' + url;
     if (url.startsWith('/')) return API_BASE + url;
-    if (url.startsWith('uploads/')) return `${API_BASE}/${url}`;
+    if (url.startsWith('uploads/')) return `${API_BASE}/api/${url}`;
     return `${API_BASE}/${url}`;
   }
 
