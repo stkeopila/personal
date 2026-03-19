@@ -2,8 +2,12 @@ const fs = require('fs');
 const path = require('path');
 
 try {
-  const envPath = path.join(__dirname, '.env');
-  if (fs.existsSync(envPath)) {
+  const envCandidates = [
+    path.join(__dirname, '..', '.env'),
+    path.join(__dirname, '.env'),
+  ];
+  envCandidates.forEach((envPath) => {
+    if (!fs.existsSync(envPath)) return;
     const content = fs.readFileSync(envPath, 'utf8');
     content.split(/\r?\n/).forEach((line) => {
       const m = line.match(/^\s*([^#=]+?)\s*=\s*(.*)?\s*$/);
@@ -13,7 +17,7 @@ try {
       val = val.replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
       process.env[key] = val;
     });
-  }
+  });
 } catch (e) {}
 
 const express = require('express');
@@ -59,8 +63,22 @@ async function main() {
     }
   } catch (e) {}
 
-  const uploadDir = path.resolve(__dirname, process.env.IMAGE_UPLOAD_DIR || 'uploads');
-  try { fs.mkdirSync(uploadDir, { recursive: true }); } catch (e) {}
+  const preferredUploadDir = path.resolve(__dirname, process.env.IMAGE_UPLOAD_DIR || 'uploads');
+  const fallbackUploadDir = path.resolve(__dirname, 'uploads');
+  let uploadDir = preferredUploadDir;
+  try {
+    fs.mkdirSync(preferredUploadDir, { recursive: true });
+    fs.accessSync(preferredUploadDir, fs.constants.W_OK);
+  } catch (e) {
+    uploadDir = fallbackUploadDir;
+    try {
+      fs.mkdirSync(uploadDir, { recursive: true });
+      fs.accessSync(uploadDir, fs.constants.W_OK);
+      console.warn(`Upload dir not writable: ${preferredUploadDir}. Using fallback: ${uploadDir}`);
+    } catch (e2) {
+      console.error('No writable upload directory available', e2);
+    }
+  }
   app.use('/uploads', express.static(uploadDir));
   const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
@@ -154,6 +172,13 @@ async function main() {
       console.error(e);
       res.status(500).json({ error: 'upload failed' });
     }
+  });
+
+  app.use((err, req, res, next) => {
+    if (err && err.name && err.name.startsWith('Multer')) {
+      return res.status(400).json({ error: err.message || 'upload failed' });
+    }
+    return next(err);
   });
 
   app.put('/api/goals/:id', authMiddleware, async (req, res) => {
