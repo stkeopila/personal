@@ -37,12 +37,14 @@ export function AppProvider({ children }) {
       try {
         const u = new URL(url);
         if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+          if (u.pathname.startsWith('/uploads/')) return API_BASE + '/api' + u.pathname;
           return API_BASE + u.pathname;
         }
       } catch (e) {
       }
       return url;
     }
+    if (url.startsWith('/uploads/')) return API_BASE + '/api' + url;
     if (url.startsWith('/')) return API_BASE + url;
     if (url.startsWith('uploads/')) return `${API_BASE}/${url}`;
     return `${API_BASE}/${url}`;
