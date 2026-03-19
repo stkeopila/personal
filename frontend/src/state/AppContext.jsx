@@ -33,9 +33,19 @@ export function AppProvider({ children }) {
 
   function normalizeImageUrl(url) {
     if (!url) return null;
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      try {
+        const u = new URL(url);
+        if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+          return API_BASE + u.pathname;
+        }
+      } catch (e) {
+      }
+      return url;
+    }
     if (url.startsWith('/')) return API_BASE + url;
-    return url;
+    if (url.startsWith('uploads/')) return `${API_BASE}/${url}`;
+    return `${API_BASE}/${url}`;
   }
 
   const login = async ({ username, password }) => {

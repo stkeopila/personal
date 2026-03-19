@@ -28,7 +28,25 @@ export default function HomePage() {
                             <strong>{g.title}</strong>
                             <div style={{ fontSize: 13 }}>{g.notes}</div>
                             {g.deadline && <div style={{ fontSize: 12, color: '#666' }}>Deadline: {g.deadline}</div>}
-                            {g.imageUrl && <div style={{ marginTop: 6 }}><img src={g.imageUrl} alt={g.title} style={{ maxWidth: 120, maxHeight: 90, borderRadius: 8 }} /></div>}
+                            <div style={{ marginTop: 6 }}>
+                                {g.imageUrl ? (
+                                    <>
+                                        <img
+                                            src={g.imageUrl}
+                                            alt={g.title}
+                                            style={{ maxWidth: 120, maxHeight: 90, borderRadius: 8 }}
+                                            onError={(e) => {
+                                                e.currentTarget.style.display = 'none';
+                                                const placeholder = e.currentTarget.nextElementSibling;
+                                                if (placeholder) placeholder.style.display = 'block';
+                                            }}
+                                        />
+                                        <div style={{ display: 'none', fontSize: 12, color: '#666' }}>Image unavailable</div>
+                                    </>
+                                ) : (
+                                    <div style={{ fontSize: 12, color: '#666' }}>No image uploaded</div>
+                                )}
+                            </div>
                         </div>
                         <div>
                             <button onClick={() => window.location.href = '/create-goal'} aria-label={`Edit ${g.title}`}>Edit</button>

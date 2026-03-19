@@ -95,7 +95,23 @@ export default function CalendarPage() {
                                     {(events[dateKey(selectedDay)] || []).map((ev) => (
                                         <li key={ev.id} style={{ marginBottom: 8 }}>
                                             <div>{ev.text}</div>
-                                            {ev.imageUrl && <img src={ev.imageUrl} alt={ev.text} style={{ maxWidth: 200, display: 'block', marginTop: 6, borderRadius: 8 }} />}
+                                            {ev.imageUrl ? (
+                                                <>
+                                                    <img
+                                                        src={ev.imageUrl}
+                                                        alt={ev.text}
+                                                        style={{ maxWidth: 200, display: 'block', marginTop: 6, borderRadius: 8 }}
+                                                        onError={(e) => {
+                                                            e.currentTarget.style.display = 'none';
+                                                            const placeholder = e.currentTarget.nextElementSibling;
+                                                            if (placeholder) placeholder.style.display = 'block';
+                                                        }}
+                                                    />
+                                                    <div style={{ display: 'none', marginTop: 6, fontSize: 12, color: '#666' }}>Image unavailable</div>
+                                                </>
+                                            ) : (
+                                                <div style={{ marginTop: 6, fontSize: 12, color: '#666' }}>No image uploaded</div>
+                                            )}
                                         </li>
                                     ))}
                                 </ul>
